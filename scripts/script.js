@@ -25,7 +25,7 @@ products.forEach((product) => {
           </div>
 
           <div class="product-quantity-container">
-            <select>
+            <select class="js-quntity-selector-${product.id}">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -66,26 +66,28 @@ document.querySelectorAll(".js-button-add-to-cart")
           matchingItem = object;
         }
       });
-
+      
+      let value = Number(document.querySelector(`.js-quntity-selector-${productId}`).value);
       if (matchingItem) {
-        matchingItem.quantity++;
+        matchingItem.quantity += value;
       } else {
+      
         cart.push({
           productId: productId,
-          quantity: 1
+          quantity: value
         })
       }
 
-      let allItems = 0; // adding to cart the quantity
+      let allItems = 0;
+    
       cart.forEach((object) => {
         allItems += object.quantity;
       })
       document.querySelector(".js-cart-quantity").innerHTML = allItems;
+
+
     });
   });
-
-
-
 
 
 
