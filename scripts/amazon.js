@@ -1,4 +1,4 @@
-import { cart } from '../data/cart.js';
+import {cart, addToCart} from '../data/cart.js';
 import { products } from '../data/products.js';
 
 
@@ -59,51 +59,46 @@ products.forEach((product) => {
 
 document.querySelector(".js-products-grid").innerHTML = productHtml;
 
+
+function updateCartQuantity() {
+  let cartQuantity = 0;
+    
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  })
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+}
+
+
 const addedTimeOutId = {};
+function addedMessage(productId) {
+  let messageElement = document.querySelector(`.js-added-to-cart-${productId}`)
+  messageElement.classList.add("added-to-cart-message")
+
+  // if exists then we the class stys  
+  if (addedTimeOutId[productId]) { // by default false, so to the settimeout
+    clearTimeout(addedTimeOutId[productId]);
+  }
+
+  addedTimeOutId[productId] = setTimeout(() => {
+    messageElement.classList.remove("added-to-cart-message");
+    delete addedTimeOutId[productId]; // Clean up the timeout ID from obj when ended.
+  }, 2000);
+}
+
+
 
 document.querySelectorAll(".js-button-add-to-cart")
   .forEach((button) => {
     button.addEventListener("click", () => {
       const productId = button.dataset.productId; // assigning product id through dataset
 
-      let matchingItem; // matching item to find
-      cart.forEach((object) => {
-        if (productId === object.productId) {
-          matchingItem = object;
-        }
-      });
+      addToCart(productId);
 
-      let value = Number(document.querySelector(`.js-quntity-selector-${productId}`).value);
-      if (matchingItem) {
-        matchingItem.quantity += value;
-      } else {
-      
-        cart.push({
-          productId: productId,
-          quantity: value
-        })
-      }
+      updateCartQuantity();
 
-      let allItems = 0;
-    
-      cart.forEach((object) => {
-        allItems += object.quantity;
-      })
-      document.querySelector(".js-cart-quantity").innerHTML = allItems;
+      addedMessage(productId);
 
-
-      let messageElement = document.querySelector(`.js-added-to-cart-${productId}`)
-      messageElement.classList.add("added-to-cart-message")
-      // if exists then we the class stys  
-      if (addedTimeOutId[productId]) { // by default false so the settimeout
-        clearTimeout(addedTimeOutId[productId]);
-      }
-
-      // 
-      addedTimeOutId[productId] = setTimeout(() => {
-        messageElement.classList.remove("added-to-cart-message");
-        delete addedTimeOutId[productId]; // Clean up the timeout ID
-      }, 2000);
     });
   });
 
