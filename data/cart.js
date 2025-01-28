@@ -37,4 +37,6 @@ export function deleteProduct(productIdToDelete) {
   })
 
   cart = newCart;
+
+  
 }
