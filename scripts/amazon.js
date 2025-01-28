@@ -1,3 +1,5 @@
+import { cart } from '../data/cart.js';
+
 let productHtml = '';
 
 products.forEach((product) => {
@@ -55,6 +57,8 @@ products.forEach((product) => {
 
 document.querySelector(".js-products-grid").innerHTML = productHtml;
 
+const addedTimeOutId = {};
+
 document.querySelectorAll(".js-button-add-to-cart")
   .forEach((button) => {
     button.addEventListener("click", () => {
@@ -85,8 +89,19 @@ document.querySelectorAll(".js-button-add-to-cart")
       })
       document.querySelector(".js-cart-quantity").innerHTML = allItems;
 
+
       let messageElement = document.querySelector(`.js-added-to-cart-${productId}`)
       messageElement.classList.add("added-to-cart-message")
+      // if exists then we the class stys  
+      if (addedTimeOutId[productId]) { // by default false so the settimeout
+        clearTimeout(addedTimeOutId[productId]);
+      }
+
+      // 
+      addedTimeOutId[productId] = setTimeout(() => {
+        messageElement.classList.remove("added-to-cart-message");
+        delete addedTimeOutId[productId]; // Clean up the timeout ID
+      }, 2000);
     });
   });
 
